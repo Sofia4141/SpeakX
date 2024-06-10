@@ -1,0 +1,28 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const Tweet = ({ getTweets }) => {
+  const [text, setText] = useState('');
+
+  const onChange = (e) => setText(e.target.value);
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/tweets', { text }, { headers: { 'x-auth-token': localStorage.getItem('token') } });
+      setText('');
+      getTweets();
+    } catch (err) {
+      console.error(err.response.data);
+    }
+  };
+
+  return (
+    <form onSubmit={onSubmit}>
+      <textarea value={text} onChange={onChange} placeholder="What's happening?" required></textarea>
+      <button type="submit">Tweet</button>
+    </form>
+  );
+};
+
+export default Tweet;
